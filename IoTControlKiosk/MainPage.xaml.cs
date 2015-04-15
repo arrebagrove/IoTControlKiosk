@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Devices.Gpio;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -23,8 +24,13 @@ namespace IoTControlKiosk
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private int LED_PIN = 5;
-        private GpioPin LED;
+        private int RED_PIN = 13;
+        private GpioPin RED_LED;
+        private int GREEN_PIN = 5;
+        private GpioPin GREEN_LED;
+        private int BLUE_PIN = 26;
+        private GpioPin BLUE_LED;
+
         private bool LED_STATE = false;
 
         private int BUZZ_PIN = 24;
@@ -41,11 +47,23 @@ namespace IoTControlKiosk
         {
             var gpio = GpioController.GetDefault();
 
-            LED = gpio.OpenPin(LED_PIN);
+            RED_LED = gpio.OpenPin(RED_PIN);
 
-            LED.Write(GpioPinValue.Low);
+            RED_LED.Write(GpioPinValue.High);
 
-            LED.SetDriveMode(GpioPinDriveMode.Output);
+            RED_LED.SetDriveMode(GpioPinDriveMode.Output);
+
+            GREEN_LED = gpio.OpenPin(GREEN_PIN);
+
+            GREEN_LED.Write(GpioPinValue.High);
+
+            GREEN_LED.SetDriveMode(GpioPinDriveMode.Output);
+
+            BLUE_LED = gpio.OpenPin(BLUE_PIN);
+
+            BLUE_LED.Write(GpioPinValue.High);
+
+            BLUE_LED.SetDriveMode(GpioPinDriveMode.Output);
 
             BUZZ = gpio.OpenPin(BUZZ_PIN);
 
@@ -58,12 +76,39 @@ namespace IoTControlKiosk
 
         private void Blink_Click(object sender, RoutedEventArgs e)
         {
-            if (LED_STATE)
-                LED.Write(GpioPinValue.Low);
-            else
-                LED.Write(GpioPinValue.High);
+            var redState = redLedToggleButton.IsChecked.Value;
+            var greenState = greenLedToggleButton.IsChecked.Value;
+            var blueState = blueLedToggleButton.IsChecked.Value;
 
-            LED_STATE = !LED_STATE;
+            if (redState)
+            {
+                RED_LED.Write(GpioPinValue.Low);
+            }
+            else
+            {
+                RED_LED.Write(GpioPinValue.High);
+
+            }
+
+            if (greenState)
+            {
+                GREEN_LED.Write(GpioPinValue.Low);
+            }
+            else
+            {
+                GREEN_LED.Write(GpioPinValue.High);
+
+            }
+
+            if (blueState)
+            {
+                BLUE_LED.Write(GpioPinValue.Low);
+            }
+            else
+            {
+                BLUE_LED.Write(GpioPinValue.High);
+
+            }
         }
 
         private void Buzz_Click(object sender, RoutedEventArgs e)
@@ -78,5 +123,9 @@ namespace IoTControlKiosk
             BUZZ.Write(GpioPinValue.High);
         }
 
+        private void redLedToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
